@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Reports | Inventory Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        @media print {
+            body { background: #fff !important; color: #000 !important; }
+            .app-sidebar, .top-navbar, .no-print { display: none !important; }
+            .main-content { margin-left: 0 !important; }
+            .glass-card { background: none !important; border: 1px solid #ccc !important; color: #000 !important; box-shadow: none !important; }
+            .text-light, .text-muted, .text-dim { color: #000 !important; }
+            .custom-table tbody tr { background: none !important; }
+            .custom-table tbody td { border-color: #ddd !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar no-print">
+            <div class="sidebar-header">
+                <a href="dashboard.html" class="brand-logo">
+                    <div class="brand-icon"><i class="bi bi-box-seam-fill"></i></div>
+                    <span>InventoryOS</span>
+                </a>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="products.html" class="nav-link">
+                        <i class="bi bi-box-seam"></i>
+                        <span>Products</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="categories.html" class="nav-link">
+                        <i class="bi bi-tags-fill"></i>
+                        <span>Categories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="reports.html" class="nav-link active">
+                        <i class="bi bi-bar-chart-line-fill"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-profile-badge">
+                    <div class="avatar-circle user-display-avatar">A</div>
+                    <div class="flex-grow-1 overflow-hidden">
+                        <div class="fw-bold text-light text-truncate user-display-name">Admin User</div>
+                        <small class="text-muted d-block text-truncate user-display-email">admin@inventory.com</small>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <!-- Top Navigation Bar -->
+            <header class="top-navbar no-print">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="sidebar-toggle-btn d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-5"></i>
+                    </button>
+                    <h4 class="page-title-heading">Inventory Reports</h4>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-glass" onclick="exportToCSV()">
+                        <i class="bi bi-file-earmark-spreadsheet-fill text-success me-2"></i>Export CSV
+                    </button>
+                    <button class="btn btn-primary-glow" onclick="window.print()">
+                        <i class="bi bi-printer-fill me-2"></i>Print Report
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content Body -->
+            <div class="content-body">
+
+                <!-- Report Overview Header Card -->
+                <div class="glass-card p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h3 class="fw-bold text-light mb-1">Executive Inventory Audit Report</h3>
+                            <p class="text-muted mb-0">Generated on <span id="reportGeneratedDate"></span></p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-primary bg-opacity-25 text-info px-3 py-2 fs-7">Official Document</span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 pt-3 border-top border-secondary opacity-75">
+                        <div class="col-6 col-md-3">
+                            <small class="text-muted text-uppercase">Total Catalog Size</small>
+                            <h4 id="reportTotalItems" class="fw-bold text-light mb-0">0</h4>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <small class="text-muted text-uppercase">Total Stock Volume</small>
+                            <h4 id="reportTotalStock" class="fw-bold text-info mb-0">0</h4>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <small class="text-muted text-uppercase">Total Inventory Value</small>
+                            <h4 id="reportTotalValuation" class="fw-bold text-success mb-0">$0.00</h4>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <small class="text-muted text-uppercase">Low Stock Alert Count</small>
+                            <h4 id="reportLowStockCount" class="fw-bold text-danger mb-0">0</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complete Inventory Detailed Table -->
+                <div class="glass-card p-4">
+                    <h5 class="fw-bold text-light mb-3"><i class="bi bi-journal-text me-2 text-info"></i>Detailed Product Valuation Table</h5>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="reportTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>Brand</th>
+                                    <th>Unit Price</th>
+                                    <th>Stock Qty</th>
+                                    <th>Total Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportTableBody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script src="../js/firebase.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('reportGeneratedDate').textContent = new Date().toLocaleString();
+            loadReportData();
+        });
+
+        async function loadReportData() {
+            let products = [];
+            try {
+                const res = await fetch(`${API_BASE_URL}/products`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) products = data.products;
+                }
+            } catch (e) {
+                products = StorageEngine.getProducts();
+            }
+
+            if (!products || products.length === 0) products = StorageEngine.getProducts();
+
+            const totalStock = products.reduce((acc, p) => acc + parseInt(p.quantity || 0), 0);
+            const totalVal = products.reduce((acc, p) => acc + (parseFloat(p.price || 0) * parseInt(p.quantity || 0)), 0);
+            const lowStockCount = products.filter(p => parseInt(p.quantity || 0) < 5).length;
+
+            document.getElementById('reportTotalItems').textContent = products.length;
+            document.getElementById('reportTotalStock').textContent = totalStock;
+            document.getElementById('reportTotalValuation').textContent = formatCurrency(totalVal);
+            document.getElementById('reportLowStockCount').textContent = lowStockCount;
+
+            const tbody = document.getElementById('reportTableBody');
+            tbody.innerHTML = products.map(p => {
+                const qty = parseInt(p.quantity || 0);
+                const price = parseFloat(p.price || 0);
+                const itemVal = qty * price;
+                const isLow = qty < 5;
+
+                return `
+                    <tr>
+                        <td><code>${p.product_id}</code></td>
+                        <td class="fw-bold text-light">${p.name}</td>
+                        <td><span class="badge bg-secondary opacity-75">${p.category}</span></td>
+                        <td>${p.brand || 'N/A'}</td>
+                        <td>${formatCurrency(price)}</td>
+                        <td class="fw-semibold">${qty}</td>
+                        <td class="fw-bold text-success">${formatCurrency(itemVal)}</td>
+                        <td>${isLow ? '<span class="badge bg-danger">Low Stock</span>' : '<span class="badge bg-success">Optimal</span>'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function exportToCSV() {
+            const products = StorageEngine.getProducts();
+            if (!products || products.length === 0) {
+                showAlert('No products to export.', 'warning');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Product ID,Product Name,Category,Brand,Supplier,Price,Quantity,Total Value,Created At\n";
+
+            products.forEach(p => {
+                const qty = parseInt(p.quantity || 0);
+                const price = parseFloat(p.price || 0);
+                const totalVal = qty * price;
+                const row = [
+                    `"${p.product_id}"`,
+                    `"${p.name.replace(/"/g, '""')}"`,
+                    `"${p.category}"`,
+                    `"${p.brand || ''}"`,
+                    `"${p.supplier || ''}"`,
+                    price,
+                    qty,
+                    totalVal,
+                    `"${p.created_at || ''}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Inventory_Report_${new Date().toISOString().slice(0, 10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
