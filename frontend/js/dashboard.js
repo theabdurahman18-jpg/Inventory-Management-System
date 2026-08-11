@@ -126,7 +126,7 @@ function renderStockChart(products) {
     const topProducts = [...products].sort((a, b) => b.quantity - a.quantity).slice(0, 7);
     const labels = topProducts.map(p => p.name.length > 15 ? p.name.substring(0, 15) + '...' : p.name);
     const quantities = topProducts.map(p => p.quantity);
-    const backgroundColors = topProducts.map(p => p.quantity < 5 ? 'rgba(244, 63, 94, 0.85)' : 'rgba(56, 189, 248, 0.85)');
+    const backgroundColors = topProducts.map(p => p.quantity < 5 ? 'rgba(244, 63, 94, 0.85)' : 'rgba(124, 58, 237, 0.85)');
 
     stockChart = new Chart(ctx, {
         type: 'bar',
@@ -147,7 +147,7 @@ function renderStockChart(products) {
                 legend: { display: false },
                 tooltip: {
                     backgroundColor: 'rgba(15, 27, 54, 0.95)',
-                    titleColor: '#38bdf8',
+                    titleColor: '#7c3aed',
                     bodyColor: '#fff',
                     borderColor: 'rgba(255,255,255,0.1)',
                     borderWidth: 1
@@ -183,7 +183,7 @@ function renderCategoryPieChart(products) {
 
     const labels = Object.keys(catCounts);
     const dataVals = Object.values(catCounts);
-    const palette = ['#38bdf8', '#818cf8', '#34d399', '#fbbf24', '#f43f5e', '#a855f7'];
+    const palette = ['#7c3aed', '#a855f7', '#c084fc', '#34d399', '#fbbf24', '#f43f5e'];
 
     categoryPieChart = new Chart(ctx, {
         type: 'doughnut',

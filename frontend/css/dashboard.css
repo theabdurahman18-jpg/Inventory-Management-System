@@ -1,5 +1,6 @@
 /* ==========================================================================
    INVENTORY MANAGEMENT SYSTEM - DASHBOARD STYLESHEET
+   Purple-Based Dashboard Theme
    ========================================================================== */
 
 /* Summary Metric Cards Grid */
@@ -39,15 +40,15 @@
 }
 
 .stat-icon-blue {
-  background: rgba(56, 189, 248, 0.15);
+  background: rgba(124, 58, 237, 0.12);
   color: var(--primary-accent);
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  border: 1px solid rgba(124, 58, 237, 0.25);
 }
 
 .stat-icon-purple {
-  background: rgba(129, 140, 248, 0.15);
+  background: rgba(168, 85, 247, 0.12);
   color: var(--secondary-accent);
-  border: 1px solid rgba(129, 140, 248, 0.3);
+  border: 1px solid rgba(168, 85, 247, 0.25);
 }
 
 .stat-icon-emerald {
